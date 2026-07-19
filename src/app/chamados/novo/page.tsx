@@ -13,6 +13,7 @@ import {
   MapPin,
   Camera,
   Save,
+  FileText,
 } from "lucide-react";
 
 interface Escola {
@@ -29,7 +30,6 @@ export default function NovoChamadoPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Form state
   const [form, setForm] = useState({
     escolaId: "",
     categoria: "",
@@ -43,7 +43,6 @@ export default function NovoChamadoPage() {
   const fetchEscolas = useCallback(async () => {
     try {
       const response = await authFetch("/api/escolas");
-
       if (response.ok) {
         const data = await response.json();
         setEscolas(data.escolas);
@@ -55,7 +54,6 @@ export default function NovoChamadoPage() {
 
   const getLocation = useCallback(() => {
     if (!navigator.geolocation) return;
-
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setForm((prev) => ({
@@ -64,9 +62,7 @@ export default function NovoChamadoPage() {
           longitude: position.coords.longitude.toString(),
         }));
       },
-      () => {
-        // Silently fail if user denies location
-      },
+      () => {},
       { enableHighAccuracy: true }
     );
   }, []);
@@ -108,7 +104,6 @@ export default function NovoChamadoPage() {
     setLoading(true);
 
     try {
-      // Validate required fields
       if (!form.escolaId || !form.categoria || !form.descricao) {
         setError("Preencha os campos obrigatórios: Escola, Categoria e Descrição");
         setLoading(false);
@@ -155,51 +150,51 @@ export default function NovoChamadoPage() {
 
   return (
     <AuthCheck>
-      <div className="min-h-screen bg-slate-100">
+      <div className="min-h-screen bg-[#f0f2f5]">
         <MobileMenuButton onClick={() => setSidebarOpen(true)} />
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <main className="lg:ml-64 p-4 lg:p-8 pt-16 lg:pt-8">
-          {/* Header */}
+        <main className="lg:ml-[260px] p-4 lg:p-6 xl:p-8 pt-16 lg:pt-6 animate-fade-in">
           <div className="flex items-center gap-4 mb-6">
             <button
               onClick={() => router.back()}
-              className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+              className="p-2 hover:bg-white rounded-xl transition-colors border border-slate-200"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5 text-slate-600" />
             </button>
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">Novo Chamado</h1>
-              <p className="text-gray-600 mt-1">Registre uma nova ocorrência escolar</p>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <FileText className="w-3.5 h-3.5" />
+                <span>Ocorrências</span>
+              </div>
+              <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">Novo Chamado</h1>
+              <p className="text-slate-500 text-sm mt-1">Registre uma nova ocorrência escolar</p>
             </div>
           </div>
 
-          {/* Success/Error Messages */}
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-2 text-green-700">
-              <Save className="w-5 h-5" />
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2 text-green-700 text-sm">
+              <Save className="w-4 h-4" />
               {success}
             </div>
           )}
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
               {error}
             </div>
           )}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
-            {/* School Selection */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-blue-600" />
                 Localização da Ocorrência
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="escolaId" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="escolaId" className="block text-sm font-medium text-slate-700 mb-1.5">
                     Escola *
                   </label>
                   <select
@@ -208,7 +203,7 @@ export default function NovoChamadoPage() {
                     value={form.escolaId}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   >
                     <option value="">Selecione uma escola</option>
                     {escolas.map((escola) => (
@@ -220,7 +215,7 @@ export default function NovoChamadoPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="localOcorrencia" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="localOcorrencia" className="block text-sm font-medium text-slate-700 mb-1.5">
                     Local na Ocorrência
                   </label>
                   <input
@@ -230,28 +225,27 @@ export default function NovoChamadoPage() {
                     value={form.localOcorrencia}
                     onChange={handleInputChange}
                     placeholder="Ex: Pátio, Sala de aula, Quadra..."
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
               </div>
 
-              {/* GPS Location Info */}
               {(form.latitude || form.longitude) && (
-                <p className="mt-3 text-sm text-gray-500 flex items-center gap-1">
-                  📍 Coordenadas GPS capturadas automaticamente
+                <p className="mt-3 text-sm text-slate-400 flex items-center gap-1">
+                  Coordenadas GPS capturadas automaticamente
                 </p>
               )}
             </div>
 
-            {/* Occurrence Details */}
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5 text-blue-600" />
                 Detalhes da Ocorrência
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="categoria" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="categoria" className="block text-sm font-medium text-slate-700 mb-1.5">
                     Categoria *
                   </label>
                   <select
@@ -260,7 +254,7 @@ export default function NovoChamadoPage() {
                     value={form.categoria}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   >
                     <option value="">Selecione uma categoria</option>
                     {CATEGORIAS.map((cat) => (
@@ -272,7 +266,7 @@ export default function NovoChamadoPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="prioridade" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="prioridade" className="block text-sm font-medium text-slate-700 mb-1.5">
                     Prioridade *
                   </label>
                   <select
@@ -280,7 +274,7 @@ export default function NovoChamadoPage() {
                     name="prioridade"
                     value={form.prioridade}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   >
                     {PRIORIDADES.map((p) => (
                       <option key={p.value} value={p.value}>
@@ -292,7 +286,7 @@ export default function NovoChamadoPage() {
               </div>
 
               <div className="mt-4">
-                <label htmlFor="descricao" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="descricao" className="block text-sm font-medium text-slate-700 mb-1.5">
                   Descrição Detalhada *
                 </label>
                 <textarea
@@ -303,33 +297,32 @@ export default function NovoChamadoPage() {
                   rows={5}
                   placeholder="Descreva detalhadamente a ocorrência..."
                   required
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none resize-y"
+                  className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-y"
                 ></textarea>
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-3">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="px-6 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-6 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
-                    <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
                     Enviando...
                   </>
                 ) : (
                   <>
-                    <Send className="w-5 h-5" />
+                    <Send className="w-4 h-4" />
                     Abrir Chamado
                   </>
                 )}

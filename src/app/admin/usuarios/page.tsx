@@ -33,7 +33,6 @@ export default function AdminUsuariosPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
 
-  // Form state
   const [form, setForm] = useState({
     nome: "",
     email: "",
@@ -47,7 +46,6 @@ export default function AdminUsuariosPage() {
   const fetchUsers = useCallback(async () => {
     try {
       const response = await authFetch("/api/users");
-
       if (response.ok) {
         const data = await response.json();
         setUsuarios(data.users || []);
@@ -109,7 +107,6 @@ export default function AdminUsuariosPage() {
 
       setSuccess(`Usuário ${data.usuario.nome} criado com sucesso!`);
       
-      // Reset form
       setForm({ nome: "", email: "", senha: "", perfil: "monitoramento", editId: null });
       setShowForm(false);
       
@@ -130,95 +127,96 @@ export default function AdminUsuariosPage() {
 
   return (
     <AuthCheck requiredProfile="administrador">
-      <div className="min-h-screen bg-slate-100">
+      <div className="min-h-screen bg-[#f0f2f5]">
         <MobileMenuButton onClick={() => setSidebarOpen(true)} />
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <main className="lg:ml-64 p-4 lg:p-8 pt-16 lg:pt-8">
+        <main className="lg:ml-[260px] p-4 lg:p-6 xl:p-8 pt-16 lg:pt-6 animate-fade-in">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-gray-800 flex items-center gap-3">
-                <Users className="w-8 h-8 text-blue-600" />
-                Gestão de Usuários
-              </h1>
-              <p className="text-gray-600 mt-1">Cadastre e gerencie os usuários do sistema</p>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                <Users className="w-3.5 h-3.5" />
+                <span>Administração</span>
+              </div>
+              <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">Gestão de Usuários</h1>
+              <p className="text-slate-500 text-sm mt-1">Cadastre e gerencie os usuários do sistema</p>
             </div>
 
             <button
               onClick={() => setShowForm(!showForm)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors"
             >
-              <UserPlus className="w-5 h-5" />
+              <UserPlus className="w-4 h-4" />
               Novo Usuário
             </button>
           </div>
 
           {/* Messages */}
           {success && (
-            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 flex items-center gap-2">
-              <Save className="w-5 h-5" />
+            <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm flex items-center gap-2">
+              <Save className="w-4 h-4" />
               {success}
             </div>
           )}
 
           {error && (
-            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              ✗ {error}
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              {error}
             </div>
           )}
 
           {/* New User Form */}
           {showForm && (
-            <div className="bg-white rounded-xl p-6 shadow-sm mb-6">
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 mb-6 card-hover">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">Novo Usuário</h2>
-                <button onClick={() => setShowForm(false)}>
-                  <X className="w-5 h-5 text-gray-500" />
+                <h2 className="text-lg font-semibold text-slate-900">Novo Usuário</h2>
+                <button onClick={() => setShowForm(false)} className="p-1 hover:bg-slate-50 rounded-lg transition-colors">
+                  <X className="w-5 h-5 text-slate-400" />
                 </button>
               </div>
 
               <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Nome Completo *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Nome Completo *</label>
                   <input
                     type="text"
                     value={form.nome}
                     onChange={(e) => setForm(prev => ({...prev, nome: e.target.value}))}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Email *</label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm(prev => ({...prev, email: e.target.value}))}
                     required
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Senha *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Senha *</label>
                   <input
                     type="password"
                     value={form.senha}
                     onChange={(e) => setForm(prev => ({...prev, senha: e.target.value}))}
                     required
                     minLength={6}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Perfil *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Perfil *</label>
                   <select
                     value={form.perfil}
                     onChange={(e) => setForm(prev => ({...prev, perfil: e.target.value}))}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   >
                     {PERFIS.filter(p => p.value !== "administrador").map(p => (
                       <option key={p.value} value={p.value}>{p.label}</option>
@@ -228,11 +226,11 @@ export default function AdminUsuariosPage() {
 
                 <div className="md:col-span-2 flex justify-end gap-3 pt-4">
                   <button type="button" onClick={() => setShowForm(false)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    className="px-4 py-2 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-medium transition-colors">
                     Cancelar
                   </button>
                   <button type="submit"
-                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors">
                     <Save className="w-4 h-4" /> Salvar Usuário
                   </button>
                 </div>
@@ -241,15 +239,15 @@ export default function AdminUsuariosPage() {
           )}
 
           {/* Search */}
-          <div className="bg-white rounded-xl p-4 shadow-sm mb-6">
+          <div className="bg-white rounded-2xl border border-slate-100 p-4 mb-6 card-hover">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Buscar por nome ou email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
               />
             </div>
           </div>
@@ -260,63 +258,65 @@ export default function AdminUsuariosPage() {
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
             </div>
           ) : filteredUsers.length === 0 ? (
-            <div className="bg-white rounded-xl p-12 shadow-sm text-center">
-              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-600 mb-2">Nenhum usuário encontrado</h3>
-              <p className="text-gray-500">{searchTerm ? "Tente ajustar a busca" : "Comece cadastrando um novo usuário"}</p>
+            <div className="bg-white rounded-2xl border border-slate-100 p-12 text-center card-hover">
+              <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-slate-600 mb-2">Nenhum usuário encontrado</h3>
+              <p className="text-slate-500 text-sm">{searchTerm ? "Tente ajustar a busca" : "Comece cadastrando um novo usuário"}</p>
             </div>
           ) : (
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Nome</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase hidden md:table-cell">Email</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase">Perfil</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase hidden lg:table-cell">Status</th>
-                    <th className="text-left px-4 py-3 text-xs font-semibold text-gray-600 uppercase hidden xl:table-cell">Data Cadastro</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {filteredUsers.map(u => (
-                    <tr key={u.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3">
-                        <span className="font-medium text-gray-800">{u.nome}</span>
-                      </td>
-                      <td className="px-4 py-3 hidden md:table-cell">
-                        <span className="text-gray-600 text-sm">{u.email}</span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${
-                          u.perfil === "administrador" 
-                            ? "bg-purple-100 text-purple-800"
-                            : u.perfil === "monitoramento"
-                              ? "bg-blue-100 text-blue-800"
-                              : "bg-orange-100 text-orange-800"
-                        }`}>
-                          {getPerfilLabel(u.perfil)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 hidden lg:table-cell">
-                        <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium ${
-                          u.ativo ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                        }`}>
-                          <span className={`w-2 h-2 rounded-full ${u.ativo ? "bg-green-500" : "bg-red-500"}`}></span>
-                          {u.ativo ? "Ativo" : "Inativo"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 hidden xl:table-cell">
-                        <span className="text-sm text-gray-500">
-                          {new Date(u.createdAt).toLocaleDateString("pt-BR")}
-                        </span>
-                      </td>
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden card-hover">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-slate-50/80 border-b border-slate-100">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Nome</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden md:table-cell">Email</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider">Perfil</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden lg:table-cell">Status</th>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden xl:table-cell">Data Cadastro</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {filteredUsers.map(u => (
+                      <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
+                        <td className="px-4 py-3">
+                          <span className="font-medium text-slate-800 text-[13px]">{u.nome}</span>
+                        </td>
+                        <td className="px-4 py-3 hidden md:table-cell">
+                          <span className="text-slate-500 text-[13px]">{u.email}</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${
+                            u.perfil === "administrador" 
+                              ? "bg-purple-100 text-purple-800"
+                              : u.perfil === "monitoramento"
+                                ? "bg-blue-100 text-blue-800"
+                                : "bg-orange-100 text-orange-800"
+                          }`}>
+                            {getPerfilLabel(u.perfil)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 hidden lg:table-cell">
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
+                            u.ativo ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                          }`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${u.ativo ? "bg-green-500" : "bg-red-500"}`}></span>
+                            {u.ativo ? "Ativo" : "Inativo"}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 hidden xl:table-cell">
+                          <span className="text-[13px] text-slate-500">
+                            {new Date(u.createdAt).toLocaleDateString("pt-BR")}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               
-              <div className="px-4 py-3 bg-gray-50 border-t">
-                <p className="text-sm text-gray-600">Total: {filteredUsers.length} usuário(s)</p>
+              <div className="px-4 py-3 bg-slate-50/50 border-t border-slate-100">
+                <p className="text-[13px] text-slate-500">Total: {filteredUsers.length} usuário(s)</p>
               </div>
             </div>
           )}

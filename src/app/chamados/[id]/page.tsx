@@ -88,7 +88,6 @@ export default function ChamadoDetalhePage() {
   const [success, setSuccess] = useState("");
   const [showSolucaoForm, setShowSolucaoForm] = useState(false);
 
-  // Form fields for solution
   const [solucaoForm, setSolucaoForm] = useState({
     solucaoAplicada: "",
     equipamentosUtilizados: "",
@@ -102,7 +101,6 @@ export default function ChamadoDetalhePage() {
   const fetchChamado = useCallback(async () => {
     try {
       const response = await authFetch(`/api/chamados/${params.id}`);
-
       if (response.ok) {
         const data = await response.json();
         setChamado(data.chamado);
@@ -169,7 +167,6 @@ export default function ChamadoDetalhePage() {
     try {
       let body: Record<string, any> = { action };
 
-      // Add solution form data for completion
       if (action === "concluir") {
         body = {
           ...body,
@@ -201,7 +198,7 @@ export default function ChamadoDetalhePage() {
       setTimeout(() => {
         setSuccess("");
         setShowSolucaoForm(false);
-        fetchChamado(); // Refresh data
+        fetchChamado();
       }, 2000);
 
     } catch (err: any) {
@@ -231,7 +228,7 @@ export default function ChamadoDetalhePage() {
       });
 
       if (response.ok) {
-        fetchChamado(); // Refresh to show the new attachment
+        fetchChamado();
       }
     } catch (err) {
       console.error("Upload error:", err);
@@ -243,7 +240,7 @@ export default function ChamadoDetalhePage() {
   if (loading) {
     return (
       <AuthCheck>
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center bg-[#f0f2f5]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
       </AuthCheck>
@@ -253,14 +250,14 @@ export default function ChamadoDetalhePage() {
   if (!chamado && error) {
     return (
       <AuthCheck>
-        <div className="min-h-screen bg-slate-100">
+        <div className="min-h-screen bg-[#f0f2f5]">
           <MobileMenuButton onClick={() => setSidebarOpen(true)} />
           <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
-          <main className="lg:ml-64 p-8">
+          <main className="lg:ml-[260px] p-4 lg:p-6 xl:p-8 pt-16 lg:pt-6 animate-fade-in">
             <div className="text-center py-12">
               <AlertTriangle className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-gray-800 mb-2">{error}</h2>
-              <Link href="/chamados" className="text-blue-600 hover:underline">
+              <h2 className="text-xl font-semibold text-slate-800 mb-2">{error}</h2>
+              <Link href="/chamados" className="text-blue-600 hover:underline text-sm">
                 Voltar para a lista
               </Link>
             </div>
@@ -283,23 +280,27 @@ export default function ChamadoDetalhePage() {
 
   return (
     <AuthCheck>
-      <div className="min-h-screen bg-slate-100">
+      <div className="min-h-screen bg-[#f0f2f5]">
         <MobileMenuButton onClick={() => setSidebarOpen(true)} />
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <main className="lg:ml-64 p-4 lg:p-8 pt-16 lg:pt-8">
+        <main className="lg:ml-[260px] p-4 lg:p-6 xl:p-8 pt-16 lg:pt-6 animate-fade-in">
           {/* Header */}
           <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.back()}
-                className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                className="p-2 hover:bg-white rounded-xl transition-colors border border-slate-200"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-5 h-5 text-slate-600" />
               </button>
               <div>
-                <div className="flex items-center gap-3">
-                  <h1 className="text-2xl font-bold text-gray-800">Chamado #{chamado.numero}</h1>
+                <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Ocorrências</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">Chamado #{chamado.numero}</h1>
                   <span className={`inline-flex px-2.5 py-1 rounded-full text-xs font-medium ${statusConfig.color}`}>
                     {statusConfig.label}
                   </span>
@@ -307,7 +308,7 @@ export default function ChamadoDetalhePage() {
                     {prioridadeConfig.label}
                   </span>
                 </div>
-                <p className="text-gray-600 mt-1">{chamado.escolaNome}</p>
+                <p className="text-slate-500 text-sm mt-1">{chamado.escolaNome}</p>
               </div>
             </div>
 
@@ -317,7 +318,7 @@ export default function ChamadoDetalhePage() {
                 <button
                   onClick={() => handleAction("aceitar")}
                   disabled={actionLoading}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                   Aceitar Atendimento
@@ -328,7 +329,7 @@ export default function ChamadoDetalhePage() {
                 <button
                   onClick={() => handleAction("iniciar_atendimento")}
                   disabled={actionLoading}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors disabled:opacity-50"
                 >
                   <Wrench className="w-4 h-4" />
                   Iniciar Atendimento
@@ -339,7 +340,7 @@ export default function ChamadoDetalhePage() {
                 <button
                   onClick={() => setShowSolucaoForm(!showSolucaoForm)}
                   disabled={actionLoading}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors disabled:opacity-50"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Concluir Atendimento
@@ -350,7 +351,7 @@ export default function ChamadoDetalhePage() {
                 <button
                   onClick={() => handleAction("fechar")}
                   disabled={actionLoading}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition-colors disabled:opacity-50"
                 >
                   <CheckCircle className="w-4 h-4" />
                   Fechar Definitivamente
@@ -361,7 +362,7 @@ export default function ChamadoDetalhePage() {
                 <button
                   onClick={() => handleAction("reabrir")}
                   disabled={actionLoading}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-medium shadow-sm transition-colors disabled:opacity-50"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Reabrir Chamado
@@ -372,92 +373,92 @@ export default function ChamadoDetalhePage() {
 
           {/* Messages */}
           {success && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
-              ✓ {success}
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm">
+              {success}
             </div>
           )}
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-              ✗ {error}
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              {error}
             </div>
           )}
 
           {/* Solution Form */}
           {showSolucaoForm && (
-            <div className="bg-white rounded-xl p-6 shadow-sm mb-6 border-l-4 border-green-500">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Registrar Solução</h3>
+            <div className="bg-white rounded-2xl border border-slate-100 p-6 mb-6 border-l-4 border-green-500 card-hover">
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">Registrar Solução</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Data/Hora Chegada</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Data/Hora Chegada</label>
                   <input
                     type="date"
                     value={solucaoForm.dataChegada}
                     onChange={(e) => setSolucaoForm(prev => ({...prev, dataChegada: e.target.value}))}
-                    className="w-full px-3 py-2 border rounded-lg mb-2"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all mb-2"
                   />
                   <input
                     type="time"
                     value={solucaoForm.horaChegada}
                     onChange={(e) => setSolucaoForm(prev => ({...prev, horaChegada: e.target.value}))}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Data/Hora Saída</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Data/Hora Saída</label>
                   <input
                     type="date"
                     value={solucaoForm.dataSaida}
                     onChange={(e) => setSolucaoForm(prev => ({...prev, dataSaida: e.target.value}))}
-                    className="w-full px-3 py-2 border rounded-lg mb-2"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all mb-2"
                   />
                   <input
                     type="time"
                     value={solucaoForm.horaSaida}
                     onChange={(e) => setSolucaoForm(prev => ({...prev, horaSaida: e.target.value}))}
-                    className="w-full px-3 py-2 border rounded-lg"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
               </div>
 
               <div className="mt-4 space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Solução Aplicada *</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Solução Aplicada *</label>
                   <textarea
                     value={solucaoForm.solucaoAplicada}
                     onChange={(e) => setSolucaoForm(prev => ({...prev, solucaoAplicada: e.target.value}))}
                     rows={3}
                     placeholder="Descreva a solução aplicada..."
-                    className="w-full px-3 py-2 border rounded-lg resize-y"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-y"
                     required
                   ></textarea>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Equipamentos Utilizados</label>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5">Equipamentos Utilizados</label>
                   <textarea
                     value={solucaoForm.equipamentosUtilizados}
                     onChange={(e) => setSolucaoForm(prev => ({...prev, equipamentosUtilizados: e.target.value}))}
                     rows={2}
                     placeholder="Ferramentas, materiais utilizados..."
-                    className="w-full px-3 py-2 border rounded-lg resize-y"
+                    className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all resize-y"
                   ></textarea>
                 </div>
               </div>
 
-              <div className="mt-4 flex justify-end gap-2">
+              <div className="mt-4 flex justify-end gap-3">
                 <button
                   onClick={() => setShowSolucaoForm(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                  className="px-4 py-2 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-medium transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={() => handleAction("concluir")}
                   disabled={!solucaoForm.solucaoAplicada || actionLoading}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                  className="px-4 py-2 bg-green-600 text-white rounded-xl text-sm font-medium hover:bg-green-700 shadow-sm disabled:opacity-50 transition-colors"
                 >
                   Confirmar Conclusão
                 </button>
@@ -469,34 +470,34 @@ export default function ChamadoDetalhePage() {
             {/* Main Info - Left side */}
             <div className="lg:col-span-2 space-y-6">
               {/* Occurrence Details */}
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+                <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <FileText className="w-5 h-5 text-blue-600" />
                   Detalhes da Ocorrência
                 </h2>
 
                 <dl className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <dt className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Categoria:</dt>
-                    <dd className="text-sm text-gray-900 font-medium">{getCategoriaLabel(chamado.categoria)}</dd>
+                    <dt className="text-sm font-medium text-slate-500 w-32 flex-shrink-0">Categoria:</dt>
+                    <dd className="text-[13px] text-slate-900 font-medium">{getCategoriaLabel(chamado.categoria)}</dd>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <dt className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Local:</dt>
-                    <dd className="text-sm text-gray-900">{chamado.localOcorrencia || "-"}</dd>
+                    <dt className="text-sm font-medium text-slate-500 w-32 flex-shrink-0">Local:</dt>
+                    <dd className="text-[13px] text-slate-900">{chamado.localOcorrencia || "-"}</dd>
                   </div>
 
                   <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                    <dt className="text-sm font-medium text-gray-500 w-32 flex-shrink-0">Descrição:</dt>
-                    <dd className="text-sm text-gray-900 whitespace-pre-wrap">{chamado.descricao}</dd>
+                    <dt className="text-sm font-medium text-slate-500 w-32 flex-shrink-0">Descrição:</dt>
+                    <dd className="text-[13px] text-slate-900 whitespace-pre-wrap">{chamado.descricao}</dd>
                   </div>
                 </dl>
               </div>
 
               {/* Attendance/Solution Details */}
               {(atendimento || chamado.dataResolucao) && (
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+                  <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                     <Wrench className="w-5 h-5 text-orange-600" />
                     Detalhes do Atendimento
                   </h2>
@@ -504,33 +505,33 @@ export default function ChamadoDetalhePage() {
                   <dl className="space-y-3">
                     {atendimento && <>
                       <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                        <dt className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Técnico Tático:</dt>
-                        <dd className="text-sm text-gray-900">{chamado.taticoNome || "-"}</dd>
+                        <dt className="text-sm font-medium text-slate-500 w-36 flex-shrink-0">Técnico Tático:</dt>
+                        <dd className="text-[13px] text-slate-900">{chamado.taticoNome || "-"}</dd>
                       </div>
                       <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                        <dt className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Data Chegada:</dt>
-                        <dd className="text-sm text-gray-900">{formatDate(atendimento.dataChegada)}</dd>
+                        <dt className="text-sm font-medium text-slate-500 w-36 flex-shrink-0">Data Chegada:</dt>
+                        <dd className="text-[13px] text-slate-900">{formatDate(atendimento.dataChegada)}</dd>
                       </div>
                       <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                        <dt className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Data Saída:</dt>
-                        <dd className="text-sm text-gray-900">{formatDate(atendimento.dataSaida)}</dd>
+                        <dt className="text-sm font-medium text-slate-500 w-36 flex-shrink-0">Data Saída:</dt>
+                        <dd className="text-[13px] text-slate-900">{formatDate(atendimento.dataSaida)}</dd>
                       </div>
                       {atendimento.solucaoAplicada && (
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                          <dt className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Solução Aplicada:</dt>
-                          <dd className="text-sm text-gray-900 whitespace-pre-wrap">{atendimento.solucaoAplicada}</dd>
+                          <dt className="text-sm font-medium text-slate-500 w-36 flex-shrink-0">Solução Aplicada:</dt>
+                          <dd className="text-[13px] text-slate-900 whitespace-pre-wrap">{atendimento.solucaoAplicada}</dd>
                         </div>
                       )}
                       {atendimento.equipamentosUtilizados && (
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                          <dt className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Equipamentos:</dt>
-                          <dd className="text-sm text-gray-900 whitespace-pre-wrap">{atendimento.equipamentosUtilizados}</dd>
+                          <dt className="text-sm font-medium text-slate-500 w-36 flex-shrink-0">Equipamentos:</dt>
+                          <dd className="text-[13px] text-slate-900 whitespace-pre-wrap">{atendimento.equipamentosUtilizados}</dd>
                         </div>
                       )}
                       {atendimento.descricaoAtendimento && (
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2">
-                          <dt className="text-sm font-medium text-gray-500 w-36 flex-shrink-0">Observações:</dt>
-                          <dd className="text-sm text-gray-900 whitespace-pre-wrap">{atendimento.descricaoAtendimento}</dd>
+                          <dt className="text-sm font-medium text-slate-500 w-36 flex-shrink-0">Observações:</dt>
+                          <dd className="text-[13px] text-slate-900 whitespace-pre-wrap">{atendimento.descricaoAtendimento}</dd>
                         </div>
                       )}
                     </>}
@@ -539,15 +540,14 @@ export default function ChamadoDetalhePage() {
               )}
 
               {/* Attachments */}
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+                <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <Camera className="w-5 h-5 text-purple-600" />
                   Anexos
                 </h2>
 
-                {/* Upload button */}
                 {(user?.perfil === "monitoramento" || user?.perfil === "tatico") && chamado.status !== "finalizado" && (
-                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg cursor-pointer hover:bg-purple-100 transition-colors mb-4">
+                  <label className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-xl text-sm font-medium cursor-pointer hover:bg-purple-100 transition-colors mb-4">
                     <Camera className="w-4 h-4" />
                     Anexar Arquivo/Foto
                     <input
@@ -559,26 +559,25 @@ export default function ChamadoDetalhePage() {
                   </label>
                 )}
 
-                {/* List of attachments */}
                 {anexos.length > 0 ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-4">
                     {anexos.map((anexo) => (
-                      <div key={anexo.id} className="border rounded-lg p-3 group hover:border-blue-300 transition-colors">
+                      <div key={anexo.id} className="border border-slate-100 rounded-xl p-3 group hover:border-blue-300 transition-colors">
                         {anexo.arquivoUrl.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
                             src={anexo.arquivoUrl}
                             alt={anexo.arquivoNome}
-                            className="w-full h-24 object-cover rounded-md mb-2"
+                            className="w-full h-24 object-cover rounded-lg mb-2"
                           />
                         ) : (
-                          <div className="w-full h-24 bg-gray-100 rounded-md mb-2 flex items-center justify-center">
-                            <FileText className="w-8 h-8 text-gray-400" />
+                          <div className="w-full h-24 bg-slate-50 rounded-lg mb-2 flex items-center justify-center">
+                            <FileText className="w-8 h-8 text-slate-300" />
                           </div>
                         )}
-                        <p className="text-xs text-gray-600 truncate">{anexo.arquivoNome}</p>
+                        <p className="text-[11px] text-slate-600 truncate">{anexo.arquivoNome}</p>
                         {anexo.tipo && (
-                          <span className="text-xs bg-gray-100 px-1.5 py-0.5 rounded text-gray-500">
+                          <span className="text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full text-slate-500">
                             {anexo.tipo.replace("_", " ")}
                           </span>
                         )}
@@ -586,7 +585,7 @@ export default function ChamadoDetalhePage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-sm">Nenhum anexo disponível.</p>
+                  <p className="text-slate-400 text-sm">Nenhum anexo disponível.</p>
                 )}
               </div>
             </div>
@@ -594,13 +593,13 @@ export default function ChamadoDetalhePage() {
             {/* Right sidebar with info cards */}
             <div className="space-y-6">
               {/* Timeline */}
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+                <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <Clock className="w-5 h-5 text-teal-600" />
                   Timeline do Chamado
                 </h2>
 
-                <div className="relative space-y-4 before:absolute before:left-3.5 before:top-6 before:bottom-6 before:w-0.5 before:bg-gray-200">
+                <div className="relative space-y-4 before:absolute before:left-3.5 before:top-6 before:bottom-6 before:w-0.5 before:bg-slate-100">
                   {[
                     { label: "Aberto", time: chamado.dataAbertura, color: "bg-blue-500" },
                     ...(chamado.dataRecebimento ? [{ label: "Recebido", time: chamado.dataRecebimento, color: "bg-cyan-500" }] : []),
@@ -612,8 +611,8 @@ export default function ChamadoDetalhePage() {
                     <div key={index} className="flex gap-4 relative">
                       <div className={`w-7 h-7 rounded-full ${event.color} flex-shrink-0 z-10`}></div>
                       <div>
-                        <p className="font-medium text-sm text-gray-800">{event.label}</p>
-                        <p className="text-xs text-gray-500">{formatDate(event.time)}</p>
+                        <p className="font-medium text-[13px] text-slate-800">{event.label}</p>
+                        <p className="text-[11px] text-slate-400">{formatDate(event.time)}</p>
                       </div>
                     </div>
                   ))}
@@ -621,22 +620,22 @@ export default function ChamadoDetalhePage() {
               </div>
 
               {/* People Involved */}
-              <div className="bg-white rounded-xl p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+                <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                   <User className="w-5 h-5 text-indigo-600" />
                   Envolvidos
                 </h2>
 
                 <div className="space-y-3">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <p className="text-xs text-blue-600 font-medium">Aberto por (Monitoramento)</p>
-                    <p className="text-sm font-medium text-gray-800">{chamado.monitoramentoNome}</p>
+                  <div className="p-3 bg-blue-50 rounded-xl">
+                    <p className="text-[11px] text-blue-600 font-medium">Aberto por (Monitoramento)</p>
+                    <p className="text-[13px] font-medium text-slate-800">{chamado.monitoramentoNome}</p>
                   </div>
 
                   {chamado.taticoNome && (
-                    <div className="p-3 bg-orange-50 rounded-lg">
-                      <p className="text-xs text-orange-600 font-medium">Técnico Tático</p>
-                      <p className="text-sm font-medium text-gray-800">{chamado.taticoNome}</p>
+                    <div className="p-3 bg-orange-50 rounded-xl">
+                      <p className="text-[11px] text-orange-600 font-medium">Técnico Tático</p>
+                      <p className="text-[13px] font-medium text-slate-800">{chamado.taticoNome}</p>
                     </div>
                   )}
                 </div>
@@ -644,8 +643,8 @@ export default function ChamadoDetalhePage() {
 
               {/* Location */}
               {(chamado.latitude || chamado.longitude) && (
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <div className="bg-white rounded-2xl border border-slate-100 p-6 card-hover">
+                  <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-red-600" />
                     Localização GPS
                   </h2>
@@ -656,9 +655,9 @@ export default function ChamadoDetalhePage() {
                     rel="noopener noreferrer"
                     className="text-sm text-blue-600 hover:underline block"
                   >
-                    Ver no mapa →
+                    Ver no mapa
                   </a>
-                  <p className="text-xs text-gray-500 mt-1">
+                  <p className="text-[11px] text-slate-400 mt-1">
                     Lat: {chamado.latitude}, Lng: {chamado.longitude}
                   </p>
                 </div>

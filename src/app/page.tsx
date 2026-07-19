@@ -14,6 +14,7 @@ import {
   Timer,
   Building2,
   TrendingUp,
+  Activity,
 } from "lucide-react";
 
 interface DashboardStats {
@@ -48,38 +49,33 @@ export default function DashboardPage() {
     async function load() {
       try {
         const data = await authFetch("/api/dashboard").then(r => r.json());
-        if (!cancelled) {
-          setStats(data.stats);
-          setChartData(data.chartData);
-        }
-      } catch (error) {
-        console.error("Error fetching dashboard:", error);
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
+        if (!cancelled) { setStats(data.stats); setChartData(data.chartData); }
+      } catch (error) { console.error("Error fetching dashboard:", error); }
+      finally { if (!cancelled) setLoading(false); }
     }
     load();
     return () => { cancelled = true; };
   }, []);
 
   const statCards = stats ? [
-    { title: "Chamados Hoje", value: stats.chamadosHoje, icon: FileText, color: "bg-blue-500", lightColor: "bg-blue-50" },
-    { title: "Em Atendimento", value: stats.emAtendimento, icon: Clock, color: "bg-yellow-500", lightColor: "bg-yellow-50" },
-    { title: "Pendentes", value: stats.pendentes, icon: AlertTriangle, color: "bg-orange-500", lightColor: "bg-orange-50" },
-    { title: "Finalizados", value: stats.finalizados, icon: CheckCircle, color: "bg-green-500", lightColor: "bg-green-50" },
-    { title: "Emergenciais", value: stats.emergenciais, icon: AlertTriangle, color: "bg-red-600", lightColor: "bg-red-50" },
-    { title: "Aguardando Fechamento", value: stats.aguardandoFechamento, icon: Timer, color: "bg-purple-500", lightColor: "bg-purple-50" },
-    { title: "Tempo Médio (h)", value: stats.tempoMedioHoras?.toFixed(1) || "0.0", icon: TrendingUp, color: "bg-indigo-500", lightColor: "bg-indigo-50" },
-    { title: "Escola + Ocorrências", value: stats.escolaMaisOcorrencias || "-", icon: Building2, color: "bg-teal-500", lightColor: "bg-teal-50" },
+    { title: "Chamados Hoje", value: stats.chamadosHoje, icon: FileText, gradient: "stat-gradient-1" },
+    { title: "Em Atendimento", value: stats.emAtendimento, icon: Clock, gradient: "stat-gradient-2" },
+    { title: "Pendentes", value: stats.pendentes, icon: AlertTriangle, gradient: "stat-gradient-3" },
+    { title: "Finalizados", value: stats.finalizados, icon: CheckCircle, gradient: "stat-gradient-4" },
+    { title: "Emergenciais", value: stats.emergenciais, icon: AlertTriangle, gradient: "stat-gradient-5" },
+    { title: "Aguardando Fechamento", value: stats.aguardandoFechamento, icon: Timer, gradient: "stat-gradient-6" },
+    { title: "Tempo Médio (h)", value: stats.tempoMedioHoras?.toFixed(1) || "0.0", icon: TrendingUp, gradient: "stat-gradient-7" },
+    { title: "Escola + Ocorrências", value: stats.escolaMaisOcorrencias || "-", icon: Building2, gradient: "stat-gradient-8" },
   ] : [];
 
   if (loading) {
     return (
       <AuthCheck>
         <div className="min-h-screen flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="flex flex-col items-center gap-3">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-slate-200 border-t-blue-600"></div>
+            <p className="text-sm text-slate-500">Carregando dashboard...</p>
+          </div>
         </div>
       </AuthCheck>
     );
@@ -87,62 +83,70 @@ export default function DashboardPage() {
 
   return (
     <AuthCheck>
-      <div className="min-h-screen bg-slate-100">
+      <div className="min-h-screen bg-[#f0f2f5]">
         <MobileMenuButton onClick={() => setSidebarOpen(true)} />
         <Sidebar isOpen={sidebarOpen} onToggle={() => setSidebarOpen(false)} />
 
-        <main className="lg:ml-64 p-4 lg:p-8 pt-16 lg:pt-8">
-          <div className="mb-8">
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-800">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Visão geral das ocorrências escolares</p>
+        <main className="lg:ml-[260px] p-4 lg:p-6 xl:p-8 pt-16 lg:pt-6 animate-fade-in">
+          {/* Header */}
+          <div className="mb-6">
+            <div className="flex items-center gap-2 text-xs text-slate-500 mb-1">
+              <Activity className="w-3.5 h-3.5" />
+              <span>Visão Geral</span>
+            </div>
+            <h1 className="text-xl lg:text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
+            <p className="text-slate-500 text-sm mt-0.5">Acompanhe as ocorrências escolares em tempo real</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-6">
             {statCards.map((card, index) => (
-              <div key={index} className={`${card.lightColor} rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow duration-200`}>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-gray-600">{card.title}</span>
-                  <div className={`p-2 ${card.color} rounded-lg`}>
+              <div key={index} className="bg-white rounded-2xl p-4 border border-slate-100 card-hover group">
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`${card.gradient} w-10 h-10 rounded-xl flex items-center justify-center shadow-lg shadow-slate-200/50 group-hover:scale-105 transition-transform`}>
                     <card.icon className="w-5 h-5 text-white" />
                   </div>
                 </div>
-                <p className="text-2xl font-bold text-gray-800 truncate">{card.value}</p>
+                <p className="text-2xl font-bold text-slate-900 tracking-tight leading-none">{card.value}</p>
+                <p className="text-[12px] text-slate-500 mt-1.5 font-medium">{card.title}</p>
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Chamados por Mês</h2>
+          {/* Charts Row 1 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+            <div className="bg-white rounded-2xl p-5 border border-slate-100">
+              <h2 className="text-sm font-semibold text-slate-900 mb-4">Chamados por Mês</h2>
               {chartData && chartData.chamadosPorMes.length > 0 ? (
                 <DynamicBarChart data={chartData.meses.map((mes, i) => ({ mes, quantidade: chartData.chamadosPorMes[i] }))} />
               ) : (
-                <div className="flex items-center justify-center h-[280px] text-gray-400">Sem dados disponíveis</div>
+                <div className="flex items-center justify-center h-[280px] text-slate-400 text-sm">Sem dados disponíveis</div>
               )}
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Ocorrências por Categoria</h2>
+            <div className="bg-white rounded-2xl p-5 border border-slate-100">
+              <h2 className="text-sm font-semibold text-slate-900 mb-4">Ocorrências por Categoria</h2>
               {chartData && chartData.categorias.length > 0 ? (
                 <DynamicPieChart data={chartData.categorias} />
               ) : (
-                <div className="flex items-center justify-center h-[280px] text-gray-400">Sem dados disponíveis</div>
+                <div className="flex items-center justify-center h-[280px] text-slate-400 text-sm">Sem dados disponíveis</div>
               )}
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Top Escolas por Ocorrências</h2>
+          {/* Charts Row 2 */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="bg-white rounded-2xl p-5 border border-slate-100">
+              <h2 className="text-sm font-semibold text-slate-900 mb-4">Top Escolas por Ocorrências</h2>
               {chartData && chartData.porEscola.length > 0 ? (
                 <DynamicHorizontalBarChart data={chartData.porEscola} />
               ) : (
-                <div className="flex items-center justify-center h-[300px] text-gray-400">Sem dados disponíveis</div>
+                <div className="flex items-center justify-center h-[300px] text-slate-400 text-sm">Sem dados disponíveis</div>
               )}
             </div>
 
-            <div className="bg-white rounded-xl p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Distribuição por Status</h2>
+            <div className="bg-white rounded-2xl p-5 border border-slate-100">
+              <h2 className="text-sm font-semibold text-slate-900 mb-4">Distribuição por Status</h2>
               {chartData && chartData.status.length > 0 ? (
                 <div className="space-y-3">
                   {chartData.status.map((item, index) => {
@@ -150,19 +154,19 @@ export default function DashboardPage() {
                     const percentage = total > 0 ? (item.value / total) * 100 : 0;
                     return (
                       <div key={index}>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-sm text-gray-600">{item.name}</span>
-                          <span className="text-sm font-medium text-gray-800">{item.value}</span>
+                        <div className="flex justify-between items-center mb-1.5">
+                          <span className="text-[13px] text-slate-600 font-medium">{item.name}</span>
+                          <span className="text-[13px] font-bold text-slate-900">{item.value}</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className="bg-blue-600 h-2 rounded-full transition-all duration-500" style={{ width: `${percentage}%` }} />
+                        <div className="w-full bg-slate-100 rounded-full h-1.5">
+                          <div className="bg-blue-600 h-1.5 rounded-full transition-all duration-700 ease-out" style={{ width: `${percentage}%` }} />
                         </div>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-[300px] text-gray-400">Sem dados disponíveis</div>
+                <div className="flex items-center justify-center h-[300px] text-slate-400 text-sm">Sem dados disponíveis</div>
               )}
             </div>
           </div>
