@@ -72,6 +72,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Nome, email, senha e perfil são obrigatórios" }, { status: 400 });
     }
 
+    if (perfil === "administrador") {
+      return NextResponse.json({ error: "Não é permitido criar usuários administradores por esta interface" }, { status: 403 });
+    }
+
     const existingUsers = await db.select().from(users).where(eq(users.email, email));
     if (existingUsers.length > 0) {
       return NextResponse.json({ error: "Email já cadastrado" }, { status: 400 });

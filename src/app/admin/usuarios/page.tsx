@@ -220,7 +220,7 @@ export default function AdminUsuariosPage() {
                     onChange={(e) => setForm(prev => ({...prev, perfil: e.target.value}))}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                   >
-                    {PERFIS.map(p => (
+                    {PERFIS.filter(p => p.value !== "administrador").map(p => (
                       <option key={p.value} value={p.value}>{p.label}</option>
                     ))}
                   </select>

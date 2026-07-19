@@ -34,3 +34,5 @@ public/uploads/
 
 # drizzle
 drizzle/meta/
+
+.vercel
